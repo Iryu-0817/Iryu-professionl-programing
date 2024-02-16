@@ -13,7 +13,7 @@
     @auth
         <p>投稿フォーム</p>
         @if(session('feedback.success'))
-            <p style="color: green;">{{ session('feedback.success') }}</p>
+            <p style="color: green">{{ session('feedback.success') }}</p>
         @endif
         <form action="{{ route('tweet.create') }}" method="post">
             @csrf
@@ -29,14 +29,18 @@
             @foreach ($tweet as $tweet)
             <details>
                 <summary>{{ $tweet->content }} by {{ $tweet->user->name }}</summary>
+            @if (\Illuminate\support\Facades\Auth::id() === $tweet->user_id)
                 <div>
                     <a  href="{{ route('tweet.update.index', ['tweetId' => $tweet->id]) }}">編集</a><br>
-                    <form action="{{ route('tweet.delete', ['tweetId' => $tweet->id]) }}" method="post">
+                    <form action="{{ route('tweet.delete', ['tweetId' => $tweet->id]) }}" method="POST">
                         @method('DELETE')
                         @csrf 
                         <button type="submit"> 削除 </button>
                     </form>
                 </div>
+                @else
+                    編集できません
+                @endif
             </details>
         @endforeach
         </form> 
